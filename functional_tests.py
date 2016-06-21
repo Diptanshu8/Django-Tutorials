@@ -1,4 +1,4 @@
-import unittest
+import unittest,time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -16,10 +16,12 @@ class testclass(unittest.TestCase):
 		self.assertIn('To-Do',header_text)
 
 		input_box = self.browser.find_element_by_id('id_new_item')
-		self.assertEqual(input_box.get_attribute('placeholder'),'Enter to-do item')
+		self.assertEqual(input_box.get_attribute('placeholder'),'Enter a to-do item')
 		
 		input_box.send_keys("Learn Django")
 		input_box.send_keys(Keys.ENTER)
+
+		
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
