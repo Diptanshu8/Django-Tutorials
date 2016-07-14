@@ -59,7 +59,5 @@ class testclass(LiveServerTestCase):
         self.check_for_row_in_the_list_table('Setup python rtmbot')
         
         #checking if the URLs for first and second user are not same
-        print first_user_list_url
-        print second_user_list_url
-        self.assertEqual(first_user_list_url,second_user_list_url)
+        self.assertNotEqual(first_user_list_url,second_user_list_url)
         self.fail("Finish the test !!")

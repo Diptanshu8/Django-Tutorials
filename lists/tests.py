@@ -14,21 +14,13 @@ class tempclass_homepagetest(TestCase):
             response = home_page(request)
             expected_html = render_to_string('home.html')
             #self.assertEqual(response.content.decode(),expected_html)
-        def test_to_check_homepage_saves_POST_request(self):
-            request = HttpRequest()
-            request.method = 'POST'
-            request.POST['item_text'] ='A new list item'
-            response = home_page(request)
-            self.assertEqual(Item.objects.count(),1)
-            new_item=Item.objects.first()
-            self.assertEqual(new_item.text,'A new list item')
         def test_to_check_that_POST_request_is_redirected(self):
             request = HttpRequest()
             request.method = 'POST'
             request.POST['item_text'] ='A new list item'
             response = home_page(request)
-            self.assertEqual(response.status_code,302)
-            self.assertEqual(response['location'],'/lists/the-only-list-in-the-world/')
+            self.assertEqual(response.status_code,200)
+            #self.assertEqual(response['location'],'/lists/the-only-list-in-the-world/')
 """        def test_to_check_display_of_multiple_entries(self):
             Item.objects.create(text='entry 1')
             Item.objects.create(text='entry 2')
@@ -47,6 +39,16 @@ class LiveTestClass(TestCase):
         response = self.client.get('/lists/the-only-list-in-the-world/')
         self.assertContains(response,'Entry 1')
         self.assertContains(response,'Entry 2')
+class NewListTest(TestCase):
+    def test_saving_a_post_request(self):
+        self.client.post('/lists/new',data = {'item_text':'A new list item'})
+        self.assertEqual(Item.objects.count(),1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text,'A new list item')
+    def test_redirection_after_POST(self):
+        response=self.client.post('/lists/new',data = {'item_text':'A new list item'})
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(response['location'],'/lists/the-only-list-in-the-world/')
 """
 class ORMTesting(TestCase):
     def test_saving_and_retrieving_item(self):
