@@ -28,17 +28,25 @@ class tempclass_homepagetest(TestCase):
             request.POST['item_text'] ='A new list item'
             response = home_page(request)
             self.assertEqual(response.status_code,302)
-            self.assertEqual(response['location'],'/')
-        def test_to_check_display_of_multiple_entries(self):
+            self.assertEqual(response['location'],'/lists/the-only-list-in-the-world/')
+"""        def test_to_check_display_of_multiple_entries(self):
             Item.objects.create(text='entry 1')
             Item.objects.create(text='entry 2')
             request = HttpRequest()
             response = home_page(request)
             self.assertIn('entry 1',response.content.decode())
             self.assertIn('entry 2',response.content.decode())
-            
-            
-
+   """        
+class LiveTestClass(TestCase):
+    def test_using_llist_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response,'list.html')
+    def test_displaying_all_items(self):
+        Item.objects.create(text='Entry 1')
+        Item.objects.create(text='Entry 2')
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertContains(response,'Entry 1')
+        self.assertContains(response,'Entry 2')
 """
 class ORMTesting(TestCase):
     def test_saving_and_retrieving_item(self):

@@ -29,6 +29,7 @@ class testclass(LiveServerTestCase):
         self.assertRegexpMatches(first_user_list_url,'/lists/.+')
         self.check_for_row_in_the_list_table('Learn Django')
         
+        input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys("Learn Django in detail")
         input_box.send_keys(Keys.ENTER)
 
@@ -36,7 +37,7 @@ class testclass(LiveServerTestCase):
         self.check_for_row_in_the_list_table('Learn Django')
         self.check_for_row_in_the_list_table('Learn Django in detail')
 
-        self.broswer.quit()
+        self.browser.quit()
         
         #now a new user walks in and wants to start a new list
         self.browser = webdriver.Firefox()
@@ -58,5 +59,7 @@ class testclass(LiveServerTestCase):
         self.check_for_row_in_the_list_table('Setup python rtmbot')
         
         #checking if the URLs for first and second user are not same
+        print first_user_list_url
+        print second_user_list_url
         self.assertEqual(first_user_list_url,second_user_list_url)
         self.fail("Finish the test !!")
