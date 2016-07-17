@@ -11,12 +11,12 @@ class testclass(LiveServerTestCase):
     def check_for_row_in_the_list_table(self,row_text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
+        print [row.text for row in rows]
         self.assertIn(row_text,[row.text for row in rows])
 
     def test_first(self):
         self.browser.get(self.live_server_url)
         self.assertIn('To-Do',self.browser.title)
-        
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do',header_text)
 
@@ -26,7 +26,7 @@ class testclass(LiveServerTestCase):
         input_box.send_keys("Learn Django")
         input_box.send_keys(Keys.ENTER)
         first_user_list_url =self.browser.current_url
-        self.assertRegexpMatches(first_user_list_url,'/lists/.+')
+        self.assertRegexpMatches(first_user_list_url,'/lists/(\d+)/')
         self.check_for_row_in_the_list_table('Learn Django')
         
         input_box = self.browser.find_element_by_id('id_new_item')
