@@ -2,12 +2,24 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+import sys
 class testclass(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://'+arg.split('=')[1]
+                return
+            super(testclass).setUpClass(testclass)
+            cls.server_url = cls.live_server_url
+    @classmethod
+    def terrDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super(testclass,self).tearDownClass()
     def setUp(self):
         self.browser = webdriver.Firefox()
     def tearDown(self):
         self.browser.quit()
-    
     def check_for_row_in_the_list_table(self,row_text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
@@ -17,7 +29,7 @@ class testclass(StaticLiveServerTestCase):
         #the user goes to the homepage
         #we have set the browser size static inorder to make sure that the text box appears in the middle
         self.browser.set_window_size(1024,768)
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         input_box = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(input_box.location['x']+input_box.size['width']/2,512,delta=5)
         input_box.send_keys("testing\n")
@@ -31,7 +43,7 @@ class temp_testclass(StaticLiveServerTestCase):
         self.browser.quit()
 
     def test_first(self):
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.assertIn('To-Do',self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do',header_text)
@@ -59,7 +71,7 @@ class temp_testclass(StaticLiveServerTestCase):
         self.browser = webdriver.Firefox()
         
         #now this user visits our homepage and verfies that it doesn't have the contents of the previous user
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Learn Django',page_text)
         self.assertNotIn('Learn Django in detail',page_text)
