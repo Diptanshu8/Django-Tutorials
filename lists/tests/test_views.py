@@ -65,5 +65,9 @@ class NewListTest(TestCase):
         self.assertEqual(response.status_code,200)
         self.assertTemplateUsed(response,'home.html')
         expected_error = "You cannot have an empty list item"
-        print response
         self.assertContains(response,expected_error)
+    def test_validation_of_saving_of_invalid_items(self):
+        response = self.client.post('/lists/new',data={'item_text':''})
+        self.assertEqual(List.objects.count(),0)
+        self.assertEqual(Item.objects.count(),0)
+
