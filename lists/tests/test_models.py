@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import resolve
 from lists.views import home_page
 from django.http import HttpRequest
@@ -31,3 +32,11 @@ class ItemModelTest(TestCase):
         self.assertEqual(first_saved_item.list,list_)
         self.assertEqual(second_saved_item.text,"second Item")
         self.assertEqual(second_saved_item.list,list_)
+
+    def test_validation_user_input(self):
+        list_=List.objects.create()
+        item = Item(list = list_,text="")
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
+

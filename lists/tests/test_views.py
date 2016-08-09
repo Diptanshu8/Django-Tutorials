@@ -3,6 +3,7 @@ from django.core.urlresolvers import resolve
 from lists.views import home_page
 from django.http import HttpRequest
 from lists.models import Item,List
+from unittest import skip
 from django.template.loader import render_to_string 
 # Create your tests here.
 class tempclass_homepagetest(TestCase):
@@ -59,4 +60,10 @@ class NewListTest(TestCase):
         correct_list = List.objects.create()
         response=self.client.post('/lists/%d/add_item'%(correct_list.id),data = {'item_text':'A new list item for an existing list'})
         self.assertRedirects(response,'/lists/%d/'%(correct_list.id))
-
+    def test_validation_errors_are_displayed_on_the_homepage_itself(self):
+        response = self.client.post('/lists/new',data={'item_text':''})
+        self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed(response,'home.html')
+        expected_error = "You cannot have an empty list item"
+        print response
+        self.assertContains(response,expected_error)
