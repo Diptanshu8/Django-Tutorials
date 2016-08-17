@@ -8,16 +8,15 @@ def view_list(request,list_id):
     temp_list = List.objects.get(id=list_id)
     if request.method == "POST":
             Item.objects.create(text=request.POST['item_text'],list = temp_list)
-            return redirect('/lists/%d/'%(temp_list.id))
+            return redirect(temp_list)
     return render(request,'list.html',{'list':temp_list,})
 def new_list(request):
         new_list = List.objects.create()
-        #item=Item.objects.create(text=request.POST['item_text'],list = new_list)
         try:
             item=Item.objects.create(text=request.POST['item_text'],list = new_list)
             item.full_clean()
             item.save()
-            return redirect('/lists/%d/'%(new_list.id))
+            return redirect(new_list)
         except ValidationError:
             new_list.delete()
             error = "You cannot have an empty list item"
